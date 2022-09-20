@@ -1,0 +1,202 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration Form</title>
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(249, 247, 244);
+      }
+      #user-entries {
+        font-size: xx-large;
+        border: 2px solid black;
+        text-align: center;
+      }
+      form {
+        background-color: white;
+        padding: 20px;
+        margin: 20px;
+        height: 23em;
+        width: 30em;
+        border-radius: 10px;
+      }
+      label {
+        font-size: x-large;
+        text-align: left;
+        padding: 10px;
+        margin: 30px;
+      }
+      input {
+        float: right;
+        height: 2em;
+        font-size: 16px;
+        line-height: 24px;
+        padding-left: 4px;
+        padding-right: 4px;
+        padding-bottom: 2px;
+        padding-top: 2px;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      }
+      table
+      {
+        width: 100%;
+        border: 2px solid black;
+        border-collapse: collapse;
+      }
+      tr,th,td
+      {
+        border: 2px solid black;
+      }
+      #submit {
+        background-color: rgb(76, 224, 76);
+        font-size: x-large;
+        border: none;
+        padding: 10px;
+        margin-left: 35px;
+        border-radius: 5px;
+        font-family: cursive;
+        font-weight: lighter;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      }
+      #submit:hover {
+        box-shadow: 2px 8px 10px rgb(74, 222, 128);
+      }
+      #submit:focus {
+        shape-outside: margin-box;
+      }
+      .registration {
+        text-align: center;
+        font-size: xx-large;
+        padding: 10px;
+        position: relative;
+        bottom: 20px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cont">
+      <form action="" id="formuser">
+        <div class="registration">Registration Form</div>
+        <label for="name">Name</label
+        ><input type="text"id="name" placeholder="Enter Your Name" required
+        /><br /><br />
+        <label for="email">Email</label
+        ><input type="email" id="email" placeholder="Enter Your Email" required
+        /><br /><br />
+        <label for="password">Password</label
+        ><input type="password" id="password" placeholder="Enter Password" required
+        /><br /><br />
+        <label for="dob">Date of Birth</label
+        ><input type="date" id="dob" style="position: relative; right: 60px; color: red" onclick="getval()"
+        required/><br /><br />
+        <label for="acceptedterms" style="font-size: large"
+          >Accept Terms & Condition</label
+        ><input  type="checkbox" id="acceptedterms" required
+          style="position: relative; right: 39%; bottom: 1%; box-shadow: none"
+        /><br /><br />
+        <button type="submit" id="submit"s>Submit</button>
+      </form>
+      <div>
+        <div id="user-entries"></div>
+      </div>
+    </div>
+    <script>
+      let formuser = document.getElementById("formuser");
+      const retrive = () => {
+        let entries = localStorage.getItem("user-entries");
+        if (entries) {
+          entries = JSON.parse(entries);
+        } else {
+          entries = [];
+        }
+        return entries;
+      };
+      let user_entries = retrive();
+      const display = () => {
+        const Entry = retrive();
+        const tableentries = Entry.map((entry) => {
+          const namecell =`<td style="padding-left:4px;padding-right:4px;padding-bottom:2px;padding-top:2px;">${entry.name}</td>`;
+          const emailcell = `<td style="padding-left:4px;padding-right:4px;padding-bottom:2px;padding-top:2px;">${entry.email}</td>`;
+          const passwordcell = `<td style="padding-left:4px;padding-right:4px;padding-bottom:2px;padding-top:2px;">${entry.password}</td>`;
+          const dobcell = `<td style="padding-left:4px;padding-right:4px;padding-bottom:2px;padding-top:2px;">${entry.dob}</td>`;
+          const acceptedtermscell = `<td style="padding-left:4px;padding-right:4px;padding-bottom:2px;padding-top:2px;">${entry.termsandcondition}</td>`;
+
+          const row = `<tr>${namecell} ${emailcell} ${passwordcell} ${dobcell} ${acceptedtermscell}</tr>`;
+          return row;
+        }).join("\n");
+
+        const table = `<table><tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Dob</th>
+            <th>Accepted terms?</th>
+            </tr>${tableentries}</table>`;
+        let detail = document.getElementById("user-entries").innerHTML = table;
+      };
+      function saveuserform(event) {
+        event.preventDefault();
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        let dob = document.getElementById("dob").value;
+        const termsandcondition = document.getElementById("acceptedterms").checked;
+        const entry = {
+          name,
+          email,
+          password,
+          dob,
+          termsandcondition,
+        };
+        user_entries.push(entry);
+        localStorage.setItem("user-entries", JSON.stringify(user_entries));
+        display();
+      }
+      formuser.addEventListener("submit", saveuserform);
+      display();
+let birthdate = document.getElementById("dob");
+function getval(today, birthDate) {
+  var age = today.getFullYear() - birthDate.getFullYear();
+  var m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
+birthdate.addEventListener("change", () => {
+  let [year, month, date] = document.getElementById("dob").value.split("-");
+
+  let dob = new Date(year, month, date);
+  let Today = new Date();
+
+  age = getval(Today, dob);
+  if (age < 18 || age > 55) {
+    birthdate.setCustomValidity("Your age is not lies between 18 and 55");
+    birthdate.style.border = "1px solid red";
+    return;
+  } else {
+    birthdate.setCustomValidity("");
+  }
+});
+const email = document.getElementById("email");
+
+email.addEventListener("input", () => validate(email));
+
+function emailvarification(em) {
+  if (em.validity.typeMismatch) {
+    em.setCustomValidity("The Email is not in the right format!!!");
+    em.reportValidity();
+  } else {
+    em.setCustomValidity("");
+  }
+}
+    </script>
+  </body>
+</html
